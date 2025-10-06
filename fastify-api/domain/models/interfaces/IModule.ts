@@ -1,4 +1,4 @@
-interface IModule {
+export interface IModule {
 	name: string;
 	basic_description: string;
 	detailed_description?: string;
@@ -8,5 +8,3 @@ interface IModule {
 	credits: number;
 	keywords: string[];
 }
-
-export default IModule;

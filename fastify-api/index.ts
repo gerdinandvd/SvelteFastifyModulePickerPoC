@@ -1,33 +1,34 @@
-import mongoose from 'mongoose';
 import Fastify from 'fastify';
-import dotenv from 'dotenv';
-import registerRoutes from './routes/registerRoutes.ts';
+import registerRoutes from './routes/aboutRoutes.ts';
 import modulesRoutes from './routes/modulesRoutes.ts';
 import authRoutes from './routes/authRoutes.ts';
+import { connectDB } from './mongoose.ts';
+import aboutRoutes from './routes/aboutRoutes.ts';
 
-dotenv.config();
-
-const uri = process.env.MONGODB_URL!;
-const clientOptions = {
-	serverApi: { version: '1' as const, strict: true, deprecationErrors: true }
-};
+// async function hashPassword(password: string) {
+//     const saltRounds = 10;
+//     const hashed = await hash(password, saltRounds);
+//     console.log("Hashed password:", hashed);
+//     return hashed;
+// }
 
 async function main() {
-	try {
-		await mongoose.connect(uri, clientOptions);
-		console.log('Connected to MongoDB!');
+	// const password = "secret";
+	// const hashed = await hashPassword(password);
 
-		const fastify = Fastify({ logger: true });
-		fastify.register(registerRoutes);
-		fastify.register(authRoutes, { prefix: 'auth' });
-		fastify.register(modulesRoutes, { prefix: 'modules' });
+	//     const match = await compare(password, hashed);
+	// console.log("Password match?", match);
 
-		await fastify.listen({ port: 3000 });
-		console.log('Fastify server running on http://localhost:3000');
-	} catch (err) {
-		console.error(err);
-		process.exit(1);
-	}
+	await connectDB(); // Verbinding maken
+
+	const fastify = Fastify({ logger: true });
+	fastify.register(aboutRoutes, { prefix: 'about' });
+	fastify.register(authRoutes, { prefix: 'auth' });
+	fastify.register(modulesRoutes, { prefix: 'modules' });
+
+	await fastify.listen({ port: 3000 });
 }
+
+// import { hash, compare } from 'bcrypt-ts'
 
 main();

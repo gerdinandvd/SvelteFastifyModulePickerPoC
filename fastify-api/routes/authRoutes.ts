@@ -1,52 +1,31 @@
 import type { FastifyInstance } from 'fastify';
-import type { FromSchema } from 'json-schema-to-ts';
-
-const postBodySchema = {
-	type: 'object',
-	properties: {
-		name: { type: 'string' },
-		password: { type: 'string' }
-	},
-	required: ['name', 'password'],
-	additionalProperties: false
-} as const;
-
-const responseSchema = {
-	type: 'object',
-	properties: {
-		message: { type: 'string' },
-		success: { type: 'boolean' }
-	},
-	required: ['message', 'success']
-} as const;
-
-type PostBody = FromSchema<typeof postBodySchema>;
-type PostResponse = FromSchema<typeof responseSchema>;
+import type { LoginRoute } from '../infrastructure/Types/route.types';
+import loginSchema from '../infrastructure/Schema/login.schema.ts';
+import responseJsonSchema from '../infrastructure/Schema/respons.schema.ts';
+import { Login } from '../domain/services/authUser.ts'
 
 async function authRoutes(fastify: FastifyInstance) {
-	fastify.post<{ Body: PostBody; reply: PostResponse }>(
-		'/login',
-		{
-			schema: {
-				body: postBodySchema,
-				response: {
-					200: responseSchema
-				}
-			}
-		},
+  fastify.post<LoginRoute>(
+    '/login',
+    {
+      schema: {
+        body: loginSchema,
+        response: {
+          200: responseJsonSchema
+        }
+      }
+    },
+    async (request, reply) => {
+      const { username, password } = request.body;
 
-		async (request, reply) => {
-			const { name, password } = request.body;
+      const success = await Login(username, password)
+      
+      reply.send({ message: `${username } resul:`, success: success });
+    }
+  );
 
-			// verify and more
-
-			const message = 'login should happen';
-			reply.send({ message, succes: true });
-		}
-	);
-
-	fastify.get('/login', async () => ({ you_are: 'Logged in' }));
-	fastify.get('/logout', async () => ({ you_are: 'Logged out' }));
+  fastify.get('/login', async () => ({ you_are: 'Logged in' }));
+  fastify.get('/logout', async () => ({ you_are: 'Logged out' }));
 }
 
 export default authRoutes;

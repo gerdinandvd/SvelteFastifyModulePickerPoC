@@ -1,4 +1,4 @@
-import IModule from '../interfaces/IModule.ts';
+import type { IModule } from '../interfaces/IModule';
 
 class Module implements IModule {
 	constructor(
