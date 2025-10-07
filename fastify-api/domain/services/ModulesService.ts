@@ -6,19 +6,33 @@ import type {
 import mongoose from 'mongoose';
 import { Types } from 'mongoose';
 
-// type _id = {
-// 	_id: string;
-// };
+import type { UpdateWriteOpResult } from 'mongoose';
 
 export async function GetAllModules(max_amount?: number): Promise<GetModulesResponse> {
 	if (typeof max_amount == 'undefined') {
-		return await ModuleModel.find().select('name basic_description  level  credits').lean();
+		const modules = await ModuleModel.find()
+			.select('_id name basic_description level credits')
+			.lean();
+
+		const modulesForJson = modules.map((m) => ({
+			...m,
+			_id: m._id.toString()
+		}));
+
+		return modulesForJson;
 	}
 
-	return await ModuleModel.find()
-		.select('name basic_description level  credits')
+	const modules = await ModuleModel.find()
+		.select('_id name basic_description level credits')
 		.limit(max_amount)
 		.lean();
+
+	const modulesForJson = modules.map((m) => ({
+		...m,
+		_id: m._id.toString()
+	}));
+
+	return modulesForJson;
 }
 
 export async function SearchForModules(
@@ -26,16 +40,30 @@ export async function SearchForModules(
 	max_amount?: number
 ): Promise<GetModulesResponse> {
 	if (typeof max_amount == 'undefined') {
-		return await ModuleModel.find({
+		const modules = await ModuleModel.find({
 			$text: { $search: searchString }
 		}).lean();
+
+		const modulesForJson = modules.map((m) => ({
+			...m,
+			_id: m._id.toString()
+		}));
+
+		return modulesForJson;
 	}
 
-	return await ModuleModel.find({
+	const modules = await ModuleModel.find({
 		$text: { $search: searchString }
 	})
 		.limit(max_amount)
 		.lean();
+
+	const modulesForJson = modules.map((m) => ({
+		...m,
+		_id: m._id.toString()
+	}));
+
+	return modulesForJson;
 }
 
 export async function GetDetailsOfModule(
@@ -57,4 +85,25 @@ export async function GetDetailsOfModule(
 		...module,
 		favored
 	};
+}
+
+export async function PostModuleIsFavored(
+	module_id: Types.ObjectId,
+	user_id: Types.ObjectId,
+	is_favored: boolean
+): Promise<boolean> {
+	let result: UpdateWriteOpResult;
+	if (is_favored) {
+		result = await UserModel.updateOne(
+			{ _id: user_id },
+			{ $addToSet: { ids_favorite_modules: module_id } }
+		);
+	} else {
+		result = await UserModel.updateOne(
+			{ _id: user_id },
+			{ $pull: { ids_favorite_modules: module_id } }
+		);
+	}
+
+	return result.acknowledged;
 }

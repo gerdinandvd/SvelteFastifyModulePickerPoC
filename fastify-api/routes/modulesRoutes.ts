@@ -1,21 +1,22 @@
-import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import type { FastifyInstance } from 'fastify';
 import getModulesResponseJsonSchema from '../infrastructure/Schema/respons.multiple.module.schema.ts';
 
-import moduleRoutes from './module/moduleRoutes.ts';
+import GetDetailsOfModule from './module/moduleRoutes.ts';
 
 import type { GetModulesRoute, GetSearchModulesRoutes } from '../infrastructure/Types/route.types';
 
 import { GetAllModules, SearchForModules } from '../domain/services/ModulesService.ts';
 
-const opts = {
-	schema: {
-		response: {
-			200: getModulesResponseJsonSchema
-		}
-	}
-};
-
 async function ModulesRoutes(fastify: FastifyInstance) {
+	const opts = {
+		schema: {
+			response: {
+				200: getModulesResponseJsonSchema
+			}
+		},
+		preHandler: [fastify.authenticate]
+	};
+
 	fastify.get<GetModulesRoute>('/', opts, async (request, reply) => {
 		const modules = await GetAllModules();
 
@@ -32,7 +33,7 @@ async function ModulesRoutes(fastify: FastifyInstance) {
 		reply.send(await GetAllModules());
 	});
 
-	fastify.register(moduleRoutes, { prefix: '/:moduleId' });
+	fastify.register(GetDetailsOfModule, { prefix: '/:moduleId' });
 }
 
 export default ModulesRoutes;

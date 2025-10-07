@@ -2,8 +2,10 @@ import type { RouteGenericInterface } from 'fastify';
 import type {
 	GetModulesResponse,
 	GetModuleResponse,
-	PostBody,
-	PostResponse
+	PostLoginBody,
+	PostLoginResponse,
+	PostModuleIsFavoredBody,
+	DefaultResponse
 } from './modules.types';
 import { ObjectId } from 'mongoose';
 
@@ -16,8 +18,8 @@ interface Params {
 }
 
 export interface LoginRoute extends RouteGenericInterface {
-	Body: PostBody;
-	Reply: PostResponse;
+	Body: PostLoginBody;
+	Reply: PostLoginResponse;
 }
 
 export interface GetModulesRoute extends RouteGenericInterface {
@@ -34,4 +36,8 @@ export interface GetModuleDetailsRoute extends RouteGenericInterface {
 	Reply: GetModuleResponse;
 }
 
-// nog uitbreiden met GetModuleResponse
+export interface PostModuleIsFavoredRoute extends RouteGenericInterface {
+	Params: Params;
+	Body: PostModuleIsFavoredBody;
+	Reply: DefaultResponse;
+}

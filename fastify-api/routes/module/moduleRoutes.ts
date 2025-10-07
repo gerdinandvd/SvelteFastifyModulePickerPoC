@@ -1,27 +1,55 @@
 import type { FastifyInstance } from 'fastify';
-import { GetDetailsOfModule } from '../../domain/services/ModulesService.ts';
-import type { GetModuleDetailsRoute } from '../../infrastructure/Types/route.types.ts';
+import { GetDetailsOfModule, PostModuleIsFavored } from '../../domain/services/ModulesService.ts';
+import type {
+	GetModuleDetailsRoute,
+	PostModuleIsFavoredRoute
+} from '../../infrastructure/Types/route.types.ts';
 import { Types } from 'mongoose';
 import ModuleJsonSchema from '../../infrastructure/Schema/respons.single.module.schema.ts';
-
-const opts = {
-	schema: {
-		response: {
-			200: ModuleJsonSchema
-		}
-	}
-};
+import responseJsonSchema from '../../infrastructure/Schema/respons.schema.ts';
 
 export default async function moduleDetailRoutes(fastify: FastifyInstance) {
-	// GET /modules/:moduleId
-	fastify.get<GetModuleDetailsRoute>('/', opts, async (request, reply) => {
+	const opts1 = {
+		schema: {
+			response: {
+				200: ModuleJsonSchema
+			}
+		},
+
+		preHandler: [fastify.authenticate]
+	};
+	fastify.get<GetModuleDetailsRoute>('/', opts1, async (request, reply) => {
 		const { moduleId } = request.params;
-		const userstring = new Types.ObjectId('68e391ca990a7d85a530446f'); // enkel voor test, nog JWS Authentication toevoegen, voor user_id
+		const { user_id } = request.user as { user_id: string };
 
-		const _id = new Types.ObjectId(moduleId);
+		const moduleObjectId = new Types.ObjectId(moduleId);
+		const userObjectId = new Types.ObjectId(user_id);
 
-		const response = await GetDetailsOfModule(_id, userstring);
+		const moduleDetails = await GetDetailsOfModule(moduleObjectId, userObjectId);
 
-		reply.send(response);
+		reply.send(moduleDetails);
+	});
+
+	const opts2 = {
+		schema: {
+			response: {
+				200: responseJsonSchema
+			}
+		},
+
+		preHandler: [fastify.authenticate]
+	};
+
+	fastify.post<PostModuleIsFavoredRoute>('/favored', opts2, async (request, reply) => {
+		const { moduleId } = request.params;
+		const { is_favored } = request.body;
+		const { user_id } = request.user as { user_id: string };
+
+		const moduleObjectId = new Types.ObjectId(moduleId);
+		const userObjectId = new Types.ObjectId(user_id);
+
+		const success = await PostModuleIsFavored(moduleObjectId, userObjectId, is_favored);
+
+		reply.send({ message: 'we hebben update geprobeert: ', success });
 	});
 }

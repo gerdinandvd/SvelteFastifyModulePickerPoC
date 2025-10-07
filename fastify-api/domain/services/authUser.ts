@@ -1,18 +1,19 @@
 import { compare } from 'bcrypt-ts';
 import { UserModel } from '../models/MongooseSchemas/index.ts';
+import { Types } from 'mongoose';
 
-export async function Login(username: string, password: string): Promise<boolean> {
+type ResponseData = {
+	success: boolean;
+	user_id: Types.ObjectId;
+};
+
+export async function Login(username: string, password: string): Promise<ResponseData> {
 	console.log(username, password);
 
 	const user = await UserModel.findOne({ username: username });
 	console.log(user);
 
-	if (!user) {
-		console.log('Gebruiker bestaat niet');
-		return false;
-	}
+	if (!user) return { success: false, user_id: new Types.ObjectId() };
 
-	const match = await compare(password, user.hashed_password);
-	console.log(match);
-	return match;
+	return { success: await compare(password, user.hashed_password), user_id: user._id };
 }
