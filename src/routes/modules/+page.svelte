@@ -21,8 +21,10 @@
 			<a href="/modules/{module._id}" class="box">
 				<h2>{module.name}</h2>
 				<p>{module.basic_description}</p>
-				<p>{module.level}</p>
-				<p>{module.credits}</p>
+				<div class="text-bottom">
+					<p>niveau: {module.level}</p>
+					<p>studiepunten: {module.credits}</p>
+				</div>
 			</a>
 		{/each}
 	{:else}
@@ -41,13 +43,28 @@
 	}
 
 	.box {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
 		flex: 0 0 calc(33.333% - 10px);
 		border: 1px solid #333;
 		padding: 20px;
-		text-align: center;
+		text-align: left;
 		box-sizing: border-box;
 		text-decoration: none;
 		color: inherit;
+		min-height: 200px;
+	}
+
+	.text-bottom {
+		margin-top: auto;
+	}
+
+	p,
+	h2 {
+		margin-top: 2px;
+		margin-bottom: 2px;
 	}
 
 	.box:hover {

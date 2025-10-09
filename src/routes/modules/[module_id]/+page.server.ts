@@ -4,7 +4,7 @@ import type { Actions, RequestEvent } from '@sveltejs/kit';
 import { redirect, fail } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async (event) => {
-	const nameId = event.params.module_id; // uit de URL
+	const nameId = event.params.module_id;
 
 	console.log('|', nameId, '|');
 
@@ -14,7 +14,6 @@ export const load: PageServerLoad = async (event) => {
 		throw redirect(404, '/auth/login');
 	}
 
-	// Gebruik de URL parameter in je fetch
 	const res = await fetch(`http://localhost:3000/modules/${nameId}`, {
 		headers: {
 			Authorization: `Bearer ${token}`,
@@ -41,13 +40,10 @@ export const actions: Actions = {
 	default: async ({ params, request, cookies }: RequestEvent) => {
 		const moduleId = params.module_id;
 		const formData = await request.formData();
-		const isFavoredRaw = formData.get('is_favored');
-		const isFavored = isFavoredRaw === 'true'; // converteert naar boolean
+		const isFavored = formData.get('is_favored') === 'true';
 		const token = cookies.get('token');
 
-		console.log(JSON.stringify({ isFavored }));
-
-		const response = await fetch(`http://localhost:3000/modules/${moduleId}/favored`, {
+		await fetch(`http://localhost:3000/modules/${moduleId}/favored`, {
 			method: 'POST',
 			headers: {
 				Authorization: `Bearer ${token}`,
@@ -56,8 +52,6 @@ export const actions: Actions = {
 			body: JSON.stringify({ is_favored: isFavored })
 		});
 
-		const result = await response.json();
-		console.log(result);
-		// Hier wat doen met 'result'
+		//throw redirect(303, `/modules/${moduleId}`);
 	}
 };

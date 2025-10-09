@@ -5,6 +5,7 @@ import getModulesResponseJsonSchema from '../Schema/respons.multiple.module.sche
 import ModuleJsonSchema from '../Schema/respons.single.module.schema';
 import moduleFavoredJsonSchema from '../Schema/favored.module.schema';
 import responseJsonSchema from '../Schema/respons.schema';
+import getFavoriteModulesJsonSchema from '../Schema/respons.favorite.modules.schema';
 
 // Type voor de POST /login request body
 export type PostLoginBody = FromSchema<typeof loginJsonSchema>;
@@ -19,3 +20,5 @@ export type GetModuleResponse = FromSchema<typeof ModuleJsonSchema>;
 export type PostModuleIsFavoredBody = FromSchema<typeof moduleFavoredJsonSchema>;
 
 export type DefaultResponse = FromSchema<typeof responseJsonSchema>;
+
+export type GetFavoriteModulesResponse = FromSchema<typeof getFavoriteModulesJsonSchema>;

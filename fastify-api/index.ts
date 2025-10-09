@@ -9,26 +9,13 @@ import authenticate from './domain/services/middleware/authenticate.ts';
 import fastifyCors from '@fastify/cors';
 import formbody from '@fastify/formbody';
 
-// async function hashPassword(password: string) {
-//     const saltRounds = 10;
-//     const hashed = await hash(password, saltRounds);
-//     console.log("Hashed password:", hashed);
-//     return hashed;
-// }
-
 async function main() {
-	// const password = "secret";
-	// const hashed = await hashPassword(password);
-
-	//     const match = await compare(password, hashed);
-	// console.log("Password match?", match);
-
 	dotenv.config();
 
 	const MONGODB_URL = process.env.MONGODB_URI!;
 	const JWT_SECRET = process.env.JWT_SECRET!;
 
-	await connectDB(MONGODB_URL); // Verbinding maken
+	await connectDB(MONGODB_URL);
 
 	const fastify = Fastify({ logger: true });
 	fastify.register(jwt, { secret: JWT_SECRET });
@@ -47,7 +34,5 @@ async function main() {
 
 	await fastify.listen({ port: 3000 });
 }
-
-// import { hash, compare } from 'bcrypt-ts'
 
 main();

@@ -1,7 +1,8 @@
 import { ModuleModel, UserModel } from '../models/MongooseSchemas/index.ts';
 import type {
 	GetModulesResponse,
-	GetModuleResponse
+	GetModuleResponse,
+	GetFavoriteModulesResponse
 } from '../../infrastructure/Types/modules.types';
 import mongoose from 'mongoose';
 import { Types } from 'mongoose';
@@ -85,6 +86,21 @@ export async function GetDetailsOfModule(
 		...module,
 		favored
 	};
+}
+
+export async function GetAllFavoriteModules(
+	user_id: Types.ObjectId
+): Promise<GetFavoriteModulesResponse> {
+	const user = await UserModel.findById(user_id)
+		.populate<{ ids_favorite_modules: { _id: string; name: string }[] }>({
+			path: 'ids_favorite_modules',
+			select: '_id name'
+		})
+		.lean();
+
+	if (!user) throw new Error('User not found');
+
+	return user.ids_favorite_modules;
 }
 
 export async function PostModuleIsFavored(

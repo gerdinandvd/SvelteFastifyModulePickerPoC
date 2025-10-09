@@ -5,7 +5,8 @@ import type {
 	PostLoginBody,
 	PostLoginResponse,
 	PostModuleIsFavoredBody,
-	DefaultResponse
+	DefaultResponse,
+	GetFavoriteModulesResponse
 } from './modules.types';
 import { ObjectId } from 'mongoose';
 
@@ -40,4 +41,8 @@ export interface PostModuleIsFavoredRoute extends RouteGenericInterface {
 	Params: Params;
 	Body: PostModuleIsFavoredBody;
 	Reply: DefaultResponse;
+}
+
+export interface GetFavoriteModulesRoute extends RouteGenericInterface {
+	Reply: GetFavoriteModulesResponse;
 }

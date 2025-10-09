@@ -3,7 +3,15 @@
 	import heart_checked from '$lib/images/heart_checked.png';
 	import heart_unchecked from '$lib/images/heart_unchecked.png';
 
+	import { enhance } from '$app/forms';
+
 	const icon = data.fetched_data.favored ? heart_checked : heart_unchecked;
+
+	let favored = data.fetched_data.favored;
+
+	const toggleFavorite = () => {
+		favored = !favored;
+	};
 </script>
 
 <div class="card">
@@ -30,20 +38,24 @@
 
 		<div>
 			<span>Favoriet:</span>
-			<form method="POST">
-				<input type="hidden" name="is_favored" value={data.fetched_data.favored ? false : true} />
+			<form method="POST" use:enhance on:submit={toggleFavorite}>
+				<input type="hidden" name="is_favored" value={favored ? false : true} />
 				<button type="submit">
 					<img
-						src={icon}
-						alt={data.fetched_data.favored ? 'Unfavorite' : 'Favorite'}
-						width="24"
-						height="24"
+						src={favored ? heart_checked : heart_unchecked}
+						alt={favored ? 'Unfavorite' : 'Favorite'}
 					/>
 				</button>
 			</form>
 		</div>
 	</div>
 </div>
+
+<noscript>
+	<em style="color: red; position: absolute;bottom: 0;">
+		Javascript is uitgeschakeld, zet het aan voor de beste ervaring</em
+	>
+</noscript>
 
 <style>
 	.card {

@@ -25,7 +25,7 @@ async function authRoutes(fastify: FastifyInstance) {
 				return reply.code(401).send({ message: 'Invalid credentials', success });
 			}
 
-			const token = await reply.jwtSign({ user_id });
+			const token = await reply.jwtSign({ user_id }, { expiresIn: '1h' });
 
 			return reply.send({
 				message: `Welcome ${username}`,
@@ -35,17 +35,7 @@ async function authRoutes(fastify: FastifyInstance) {
 		}
 	);
 
-	fastify.get('/verifyjwt', async (request, reply) => {
-		await request.jwtVerify();
-		return { user: request.user };
-	});
-
-	fastify.get('/login', async () => ({ you_are: 'Logged in' }));
 	fastify.get('/logout', async () => ({ you_are: 'Logged out' }));
-
-	// fastify.get('/protected', { preHandler: [fastify.authenticate] }, async (request, reply) => {
-	// 	return { message: 'You accessed protected content', user: request.user };
-	// });
 }
 
 export default authRoutes;
