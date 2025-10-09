@@ -1,4 +1,4 @@
-const responseJsonSchema = {
+const ApiResponseSchema = {
 	type: 'object',
 	required: ['message', 'success'],
 	properties: {
@@ -7,4 +7,4 @@ const responseJsonSchema = {
 	}
 } as const;
 
-export default responseJsonSchema;
+export default ApiResponseSchema;

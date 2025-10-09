@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { ModuleModel, UserModel } from './domain/models/MongooseSchemas/index.ts';
+import { ModuleModel, UserModel } from '../infrastructure/MongooseSchemas/index.ts';
 
 const clientOptions = {
 	serverApi: { version: '1' as const, strict: false, deprecationErrors: true, autoIndex: true }

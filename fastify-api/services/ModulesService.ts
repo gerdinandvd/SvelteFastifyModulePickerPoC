@@ -1,9 +1,9 @@
-import { ModuleModel, UserModel } from '../models/MongooseSchemas/index.ts';
+import { ModuleModel, UserModel } from '../../infrastructure/MongooseSchemas/index.ts';
 import type {
 	GetModulesResponse,
 	GetModuleResponse,
 	GetFavoriteModulesResponse
-} from '../../infrastructure/Types/modules.types';
+} from '../../infrastructure/types/modules.types.ts';
 import mongoose from 'mongoose';
 import { Types } from 'mongoose';
 

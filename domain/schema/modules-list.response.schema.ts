@@ -1,5 +1,4 @@
-// src/Schema/modules.schema.ts
-const moduleSchema = {
+const ModuleListItemSchema = {
 	type: 'object',
 	properties: {
 		_id: { type: 'string' },
@@ -11,9 +10,9 @@ const moduleSchema = {
 	required: ['_id', 'name', 'basic_description', 'level', 'credits']
 } as const;
 
-const getModulesResponseJsonSchema = {
+const ModulesListResponseSchema = {
 	type: 'array',
-	items: moduleSchema
+	items: ModuleListItemSchema
 } as const;
 
-export default getModulesResponseJsonSchema;
+export default ModulesListResponseSchema;

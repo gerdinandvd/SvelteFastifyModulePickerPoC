@@ -1,4 +1,4 @@
-const moduleSchema = {
+const FavoriteModuleSchema = {
 	type: 'object',
 	properties: {
 		_id: { type: 'string' },
@@ -7,9 +7,9 @@ const moduleSchema = {
 	required: ['_id', 'name']
 } as const;
 
-const getFavoriteModulesJsonSchema = {
+const FavoriteModulesResponseSchema = {
 	type: 'array',
-	items: moduleSchema
+	items: FavoriteModuleSchema
 } as const;
 
-export default getFavoriteModulesJsonSchema;
+export default FavoriteModulesResponseSchema;

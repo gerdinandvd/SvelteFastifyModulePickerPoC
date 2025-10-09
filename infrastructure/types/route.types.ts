@@ -5,42 +5,45 @@ import type {
 	PostLoginBody,
 	PostLoginResponse,
 	PostModuleIsFavoredBody,
-	DefaultResponse,
+	GenericResponse as ApiBaseResponse,
 	GetFavoriteModulesResponse
 } from './modules.types';
-import { ObjectId } from 'mongoose';
 
-interface SearchQuery {
+interface SearchModulesQuery {
 	module_request?: string;
 }
 
-interface Params {
+interface ModuleIdParams {
 	moduleId: string;
 }
 
-export interface LoginRoute extends RouteGenericInterface {
+// --- AUTH ROUTES ---
+
+export interface PostLoginRoute extends RouteGenericInterface {
 	Body: PostLoginBody;
 	Reply: PostLoginResponse;
 }
+
+// --- MODULE ROUTES ---
 
 export interface GetModulesRoute extends RouteGenericInterface {
 	Reply: GetModulesResponse;
 }
 
-export interface GetSearchModulesRoutes extends RouteGenericInterface {
+export interface GetSearchModulesRoute extends RouteGenericInterface {
 	Reply: GetModulesResponse;
-	Querystring: SearchQuery;
+	Querystring: SearchModulesQuery;
 }
 
-export interface GetModuleDetailsRoute extends RouteGenericInterface {
-	Params: Params;
+export interface GetModuleRoute extends RouteGenericInterface {
+	Params: ModuleIdParams;
 	Reply: GetModuleResponse;
 }
 
-export interface PostModuleIsFavoredRoute extends RouteGenericInterface {
-	Params: Params;
+export interface PostModuleFavoritedRoute extends RouteGenericInterface {
+	Params: ModuleIdParams;
 	Body: PostModuleIsFavoredBody;
-	Reply: DefaultResponse;
+	Reply: ApiBaseResponse;
 }
 
 export interface GetFavoriteModulesRoute extends RouteGenericInterface {

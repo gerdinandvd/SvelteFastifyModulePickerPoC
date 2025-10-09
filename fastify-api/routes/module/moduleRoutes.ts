@@ -1,24 +1,23 @@
 import type { FastifyInstance } from 'fastify';
-import { GetDetailsOfModule, PostModuleIsFavored } from '../../domain/services/ModulesService.ts';
+import { GetDetailsOfModule, PostModuleIsFavored } from '../../services/ModulesService.ts';
 import type {
-	GetModuleDetailsRoute,
-	PostModuleIsFavoredRoute
-} from '../../infrastructure/Types/route.types.ts';
+	GetModuleRoute,
+	PostModuleFavoritedRoute
+} from '../../../infrastructure/types/route.types.ts';
 import { Types } from 'mongoose';
-import ModuleJsonSchema from '../../infrastructure/Schema/respons.single.module.schema.ts';
-import responseJsonSchema from '../../infrastructure/Schema/respons.schema.ts';
+import { ModuleResponseSchema, ApiResponseSchema } from '../../../domain/schema/index.ts';
 
 export default async function moduleDetailRoutes(fastify: FastifyInstance) {
 	const opts1 = {
 		schema: {
 			response: {
-				200: ModuleJsonSchema
+				200: ModuleResponseSchema
 			}
 		},
 
 		preHandler: [fastify.authenticate]
 	};
-	fastify.get<GetModuleDetailsRoute>('/', opts1, async (request, reply) => {
+	fastify.get<GetModuleRoute>('/', opts1, async (request, reply) => {
 		const { moduleId } = request.params;
 		const { user_id } = request.user as { user_id: string };
 
@@ -33,14 +32,14 @@ export default async function moduleDetailRoutes(fastify: FastifyInstance) {
 	const opts2 = {
 		schema: {
 			response: {
-				200: responseJsonSchema
+				200: ApiResponseSchema
 			}
 		},
 
 		preHandler: [fastify.authenticate]
 	};
 
-	fastify.post<PostModuleIsFavoredRoute>('/favored', opts2, async (request, reply) => {
+	fastify.post<PostModuleFavoritedRoute>('/favored', opts2, async (request, reply) => {
 		const { moduleId } = request.params;
 		const { is_favored } = request.body;
 		const { user_id } = request.user as { user_id: string };

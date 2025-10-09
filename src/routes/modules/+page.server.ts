@@ -1,5 +1,5 @@
 // +page.server.ts
-import type { GetModulesResponse } from '../../../fastify-api/infrastructure/Types/modules.types';
+import type { GetModulesResponse } from '../../../infrastructure/Types/modules.types';
 import type { PageServerLoad, Actions } from './$types';
 import { redirect } from '@sveltejs/kit';
 

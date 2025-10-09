@@ -1,4 +1,4 @@
-const moduleFavoredJsonSchema = {
+const ModuleFavoredRequestSchema = {
 	type: 'object',
 	required: ['is_favored'],
 	properties: {
@@ -6,4 +6,4 @@ const moduleFavoredJsonSchema = {
 	}
 } as const;
 
-export default moduleFavoredJsonSchema;
+export default ModuleFavoredRequestSchema;

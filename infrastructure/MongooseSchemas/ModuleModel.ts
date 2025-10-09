@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import type { IModule } from '../interfaces/IModule';
+import type { IModule } from '../../domain/interfaces/IModule';
 
 const ModuleSchema = new Schema<IModule>({
 	name: { type: String, required: true },

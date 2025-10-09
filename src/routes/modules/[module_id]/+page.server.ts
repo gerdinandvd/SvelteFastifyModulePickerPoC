@@ -1,7 +1,7 @@
-import type { GetModuleResponse } from '../../../../fastify-api/infrastructure/Types/modules.types';
+import type { GetModuleResponse } from '../../../../infrastructure/Types/modules.types';
 import type { PageServerLoad } from './$types';
 import type { Actions, RequestEvent } from '@sveltejs/kit';
-import { redirect, fail } from '@sveltejs/kit';
+import { redirect, fail } from '@sveltejs/kit'; //
 
 export const load: PageServerLoad = async (event) => {
 	const nameId = event.params.module_id;

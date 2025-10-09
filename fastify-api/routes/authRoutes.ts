@@ -1,18 +1,17 @@
 import type { FastifyInstance } from 'fastify';
-import type { LoginRoute } from '../infrastructure/Types/route.types';
-import loginSchema from '../infrastructure/Schema/login.schema.ts';
-import responseJsonSchema from '../infrastructure/Schema/respons.login.schema.ts';
-import { Login } from '../domain/services/authUser.ts';
-import fastifyJwt from '@fastify/jwt';
+import type { PostLoginRoute } from '../../infrastructure/types/route.types.ts';
+import { LoginRequestSchema, LoginResponseSchema } from '../../domain/schema/index.ts';
+import { Login } from '../services/authUser.ts';
+//import fastifyJwt from '@fastify/jwt';
 
 async function authRoutes(fastify: FastifyInstance) {
-	fastify.post<LoginRoute>(
+	fastify.post<PostLoginRoute>(
 		'/login',
 		{
 			schema: {
-				body: loginSchema,
+				body: LoginRequestSchema,
 				response: {
-					200: responseJsonSchema
+					200: LoginResponseSchema
 				}
 			}
 		},
@@ -22,20 +21,51 @@ async function authRoutes(fastify: FastifyInstance) {
 			const { success, user_id } = await Login(username, password);
 
 			if (!success) {
-				return reply.code(401).send({ message: 'Invalid credentials', success });
+				return reply.code(401); // foutmelding ofzo
 			}
 
-			const token = await reply.jwtSign({ user_id }, { expiresIn: '1h' });
+			const accessToken = await reply.jwtSign({ user_id }, { expiresIn: '15m' });
+			const refreshToken = await reply.jwtSign({ user_id }, { expiresIn: '7d' });
 
-			return reply.send({
-				message: `Welcome ${username}`,
-				token: token,
-				success: true
-			});
+			//const token = await reply.jwtSign({ user_id }, { expiresIn: '1h' });
+
+			return reply
+				.setCookie('refreshToken', refreshToken, {
+					httpOnly: true,
+					secure: true,
+					path: '/'
+				})
+				.send({
+					accessToken
+				});
 		}
 	);
 
-	fastify.get('/logout', async () => ({ you_are: 'Logged out' }));
+	fastify.post('/logout', async (request, reply) => {
+		reply.clearCookie('refreshToken', { path: '/' }).send({ message: 'Logged out successfully' });
+	});
+
+	type JwtPayload = {
+		user_id: string;
+	};
+
+	// todo: RefreshRoute
+	fastify.post('/refresh', async (request, reply) => {
+		try {
+			const { refreshToken } = request.cookies;
+
+			if (!refreshToken) {
+				return reply.status(401).send({ error: 'Refresh token missing' });
+			}
+
+			const user = fastify.jwt.verify<JwtPayload>(refreshToken);
+			const newAccessToken = fastify.jwt.sign({ user_id: user.user_id }, { expiresIn: '15m' });
+
+			reply.send({ accessToken: newAccessToken });
+		} catch {
+			reply.status(401).send({ error: 'Invalid refresh token' });
+		}
+	});
 }
 
 export default authRoutes;

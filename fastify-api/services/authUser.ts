@@ -1,5 +1,5 @@
 import { compare } from 'bcrypt-ts';
-import { UserModel } from '../models/MongooseSchemas/index.ts';
+import { UserModel } from '../../infrastructure/MongooseSchemas/index.ts';
 import { Types } from 'mongoose';
 
 type ResponseData = {

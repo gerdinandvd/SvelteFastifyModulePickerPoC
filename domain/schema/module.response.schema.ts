@@ -1,4 +1,4 @@
-const ModuleJsonSchema = {
+const ModuleResponseSchema = {
 	type: 'object',
 	properties: {
 		name: { type: 'string' },
@@ -13,4 +13,4 @@ const ModuleJsonSchema = {
 	required: ['name', 'basic_description', 'type', 'level', 'theme', 'credits', 'favored']
 } as const;
 
-export default ModuleJsonSchema;
+export default ModuleResponseSchema;

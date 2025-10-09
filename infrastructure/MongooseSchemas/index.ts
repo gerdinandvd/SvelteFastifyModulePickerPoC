@@ -1,7 +1,7 @@
 import { model } from 'mongoose';
 
-import type { IUser } from '../interfaces/IUser';
-import type { IModule } from '../interfaces/IModule';
+import type { IUser } from '../../domain/interfaces/IUser.ts';
+import type { IModule } from '../../domain/interfaces/IModule.ts';
 
 import UserSchema from './UserModel.ts';
 import ModuleSchema from './ModuleModel.ts';

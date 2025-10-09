@@ -1,27 +1,27 @@
 import type { FastifyInstance } from 'fastify';
-import getModulesResponseJsonSchema from '../infrastructure/Schema/respons.multiple.module.schema.ts';
-import getFavoriteModulesJsonSchema from '../infrastructure/Schema/respons.favorite.modules.schema.ts';
+import ModulesListResponseSchema from '../../domain/schema/modules-list.response.schema.ts';
+import FavoriteModulesResponseSchema from '../../domain/schema/favorite-modules.response.schema.ts';
 
 import GetDetailsOfModule from './module/moduleRoutes.ts';
 
 import type {
 	GetModulesRoute,
-	GetSearchModulesRoutes,
+	GetSearchModulesRoute,
 	GetFavoriteModulesRoute
-} from '../infrastructure/Types/route.types';
+} from '../../infrastructure/types/route.types.ts';
 
 import {
 	GetAllModules,
 	SearchForModules,
 	GetAllFavoriteModules
-} from '../domain/services/ModulesService.ts';
+} from '../services/ModulesService.ts';
 import { Types } from 'mongoose';
 
 async function ModulesRoutes(fastify: FastifyInstance) {
 	const opts1 = {
 		schema: {
 			response: {
-				200: getModulesResponseJsonSchema
+				200: ModulesListResponseSchema
 			}
 		},
 		preHandler: [fastify.authenticate]
@@ -30,7 +30,7 @@ async function ModulesRoutes(fastify: FastifyInstance) {
 	const opts2 = {
 		schema: {
 			response: {
-				200: getFavoriteModulesJsonSchema
+				200: FavoriteModulesResponseSchema
 			}
 		},
 		preHandler: [fastify.authenticate]
@@ -42,7 +42,7 @@ async function ModulesRoutes(fastify: FastifyInstance) {
 		reply.send(modules);
 	});
 
-	fastify.get<GetSearchModulesRoutes>('/search', opts1, async (request, reply) => {
+	fastify.get<GetSearchModulesRoute>('/search', opts1, async (request, reply) => {
 		const module_request = request.query.module_request;
 
 		if (typeof module_request != 'undefined') {
