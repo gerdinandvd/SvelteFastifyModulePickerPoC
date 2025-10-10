@@ -51,12 +51,6 @@
 	</div>
 </div>
 
-<noscript>
-	<em style="color: red; position: absolute;bottom: 0;">
-		Javascript is uitgeschakeld, zet het aan voor de beste ervaring</em
-	>
-</noscript>
-
 <style>
 	.card {
 		width: 60vw;

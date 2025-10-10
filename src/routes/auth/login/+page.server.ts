@@ -12,18 +12,32 @@ export const actions: Actions = {
 		const res = await fetch('http://localhost:3000/auth/login', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ username, password })
+			body: JSON.stringify({ username, password }),
+			credentials: 'include'
 		});
+
+		const setCookieHeader = res.headers.get('set-cookie');
+
+		const setCookies = parseSetCookie(setCookieHeader);
+		const refreshToken = setCookies['refreshToken'];
 
 		const data = await res.json();
 
-		if (data.success) {
-			cookies.set('token', data.token, {
+		if (data) {
+			cookies.set('accessToken', data.accessToken, {
 				httpOnly: true,
 				path: '/',
 				sameSite: 'strict',
 				secure: process.env.NODE_ENV === 'production',
-				maxAge: 60 * 60 * 24
+				maxAge: 60 * 15
+			});
+
+			cookies.set('refreshToken', refreshToken, {
+				httpOnly: true,
+				path: '/',
+				sameSite: 'strict',
+				secure: process.env.NODE_ENV === 'production',
+				maxAge: 60 * 60 * 24 * 7
 			});
 
 			// redirect naar /modules bij succes
@@ -31,6 +45,18 @@ export const actions: Actions = {
 		}
 
 		// fail() houdt de page open en geeft data terug
-		return fail(400, { error: data.message });
+		return fail(400, 'er is iets misgegaan');
 	}
 };
+
+function parseSetCookie(setCookieHeader: string | null): Record<string, string> {
+	if (!setCookieHeader) return {};
+
+	const cookies: Record<string, string> = {};
+	// split op comma + ; is tricky, dus beter per cookie
+	const parts = setCookieHeader.split(/; */); // split op ; met optionele spaties
+	const [nameValue, ...rest] = parts;
+	const [name, value] = nameValue.split('=');
+	cookies[name] = value;
+	return cookies;
+}

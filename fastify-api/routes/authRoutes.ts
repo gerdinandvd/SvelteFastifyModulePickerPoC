@@ -32,7 +32,8 @@ async function authRoutes(fastify: FastifyInstance) {
 			return reply
 				.setCookie('refreshToken', refreshToken, {
 					httpOnly: true,
-					secure: true,
+					secure: process.env.NODE_ENV === 'production',
+					sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
 					path: '/'
 				})
 				.send({
@@ -55,15 +56,15 @@ async function authRoutes(fastify: FastifyInstance) {
 			const { refreshToken } = request.cookies;
 
 			if (!refreshToken) {
-				return reply.status(401).send({ error: 'Refresh token missing' });
+				return reply.status(401).send({ error: 'No refresh token' });
 			}
 
-			const user = fastify.jwt.verify<JwtPayload>(refreshToken);
-			const newAccessToken = fastify.jwt.sign({ user_id: user.user_id }, { expiresIn: '15m' });
+			const user = await fastify.jwt.verify<JwtPayload>(refreshToken);
+			const newAccessToken = await reply.jwtSign({ user_id: user.user_id }, { expiresIn: '15m' });
 
-			reply.send({ accessToken: newAccessToken });
-		} catch {
-			reply.status(401).send({ error: 'Invalid refresh token' });
+			return reply.send({ accessToken: newAccessToken });
+		} catch (err) {
+			return reply.status(401).send({ error: 'Invalid refresh token' });
 		}
 	});
 }

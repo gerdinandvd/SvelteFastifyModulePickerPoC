@@ -14,7 +14,6 @@ export default async function moduleDetailRoutes(fastify: FastifyInstance) {
 				200: ModuleResponseSchema
 			}
 		},
-
 		preHandler: [fastify.authenticate]
 	};
 	fastify.get<GetModuleRoute>('/', opts1, async (request, reply) => {
@@ -35,7 +34,6 @@ export default async function moduleDetailRoutes(fastify: FastifyInstance) {
 				200: ApiResponseSchema
 			}
 		},
-
 		preHandler: [fastify.authenticate]
 	};
 
