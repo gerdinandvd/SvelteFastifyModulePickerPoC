@@ -1,4 +1,4 @@
-import { ModuleModel, UserModel } from '../../infrastructure/MongooseSchemas/index.ts';
+import { ModuleModel, UserModel } from '../mongoose.ts';
 import type {
 	GetModulesResponse,
 	GetModuleResponse,
