@@ -3,8 +3,13 @@ import type { GetFavoriteModulesResponse } from '../../../../infrastructure/Type
 import type { PageServerLoad } from './$types';
 import { redirect, fail } from '@sveltejs/kit';
 
+const baseUrl =
+	process.env.NODE_ENV === 'production'
+		? 'https://mijnbackenddemo3.loca.lt'
+		: 'http://localhost:3000';
+
 export const load: PageServerLoad = async ({ url, cookies }) => {
-	const endpoint = 'http://localhost:3000/modules/favorites';
+	const endpoint = `${baseUrl}/modules/favorites`;
 	const res = await fetchWithAuth(endpoint, cookies);
 
 	if (!res.ok) {

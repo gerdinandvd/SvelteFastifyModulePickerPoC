@@ -36,9 +36,14 @@ async function main() {
 	fastify.register(authenticate);
 
 	fastify.register(fastifyCors, {
-		origin: 'http://localhost:5173',
+		origin: [
+			'https://sveltefastifymodulepickerpoc-production.up.railway.app',
+			'https://mijnbackenddemo3.loca.lt/',
+			'http://localhost:5173'
+		],
 		credentials: true
 	});
+
 	fastify.register(formbody);
 
 	fastify.register(aboutRoutes, { prefix: 'about' });

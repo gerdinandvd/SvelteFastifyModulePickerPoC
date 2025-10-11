@@ -1,6 +1,11 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 import { redirect, fail } from '@sveltejs/kit';
 
+const baseUrl =
+	process.env.NODE_ENV === 'production'
+		? 'https://mijnbackenddemo3.loca.lt'
+		: 'http://localhost:3000';
+
 export const actions: Actions = {
 	default: async (event: RequestEvent) => {
 		const { request, cookies } = event;
@@ -9,7 +14,7 @@ export const actions: Actions = {
 		const password = form.get('password') as string;
 
 		// Stuur login request naar je backend
-		const res = await fetch('http://localhost:3000/auth/login', {
+		const res = await fetch(`${baseUrl}/auth/login`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ username, password }),
