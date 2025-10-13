@@ -9,6 +9,7 @@ import dotenv from 'dotenv';
 import authenticate from './services/middleware/authenticate.ts';
 import fastifyCors from '@fastify/cors';
 import formbody from '@fastify/formbody';
+import localtunnel from 'localtunnel';
 
 async function main() {
 	dotenv.config();
@@ -51,6 +52,14 @@ async function main() {
 	fastify.register(modulesRoutes, { prefix: 'modules' });
 
 	await fastify.listen({ port: 3000 });
+
+	const tunnel = await localtunnel({ port: 3000, subdomain: 'mijnbackenddemo3' });
+
+	console.log(`🌍 Public URL: ${tunnel.url}`);
+
+	tunnel.on('close', () => {
+		console.log('Tunnel closed');
+	});
 }
 
 main();
