@@ -2,23 +2,28 @@ import { redirect } from '@sveltejs/kit';
 
 export async function fetchWithAuth(url: string, cookies: any, options: RequestInit = {}) {
 	const accessToken = cookies.get('accessToken');
+	const refreshToken = cookies.get('refreshToken');
 
-	if (!accessToken && !cookies.get('refreshToken')) {
+	if (!accessToken && !refreshToken) {
 		throw redirect(303, '/auth/login');
 	}
 
-	let res = await fetch(url, {
-		...options,
-		headers: {
-			...(options.headers || {}),
-			Authorization: `Bearer ${accessToken}`,
-			'Content-Type': 'application/json'
-		}
-	});
+	let res;
+
+	if (accessToken) {
+		res = await fetch(url, {
+			...options,
+			headers: {
+				...(options.headers || {}),
+				Authorization: `Bearer ${accessToken}`,
+				'Content-Type': 'application/json'
+			}
+		});
+	} else {
+		res = { status: 401 } as Response; // als accestoken er niet is dan is er niet geautoriseerd
+	}
 
 	if (res.status === 401) {
-		const refreshToken = cookies.get('refreshToken');
-
 		if (!refreshToken) {
 			throw redirect(303, '/auth/login');
 		}
