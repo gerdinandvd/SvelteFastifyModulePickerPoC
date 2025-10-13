@@ -38,7 +38,7 @@ async function main() {
 
 	fastify.register(fastifyCors, {
 		origin: [
-			'https://sveltefastifymodulepickerpoc-production.up.railway.app',
+			'https://sweet-nourishment-production.up.railway.app/',
 			'https://mijnbackenddemo3.loca.lt/',
 			'http://localhost:5173'
 		],
