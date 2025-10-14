@@ -8,10 +8,7 @@ type ResponseData = {
 };
 
 export async function Login(username: string, password: string): Promise<ResponseData> {
-	console.log(username, password);
-
 	const user = await UserModel.findOne({ username: username });
-	console.log(user);
 
 	if (!user) return { success: false, user_id: new Types.ObjectId() };
 

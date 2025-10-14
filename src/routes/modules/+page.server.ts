@@ -4,17 +4,10 @@ import type { GetModulesResponse } from '../../../infrastructure/Types/modules.t
 import type { PageServerLoad, Actions } from './$types';
 import { redirect, error } from '@sveltejs/kit';
 
-const baseUrl =
-	process.env.NODE_ENV === 'production'
-		? 'https://mijnbackenddemo3.loca.lt'
-		: 'http://localhost:3000';
-
 export const load: PageServerLoad = async ({ url, cookies }) => {
 	const search = url.searchParams.get('search');
 
-	const endpoint = search
-		? `${baseUrl}/modules/search?module_request=${search}`
-		: `${baseUrl}/modules/`;
+	const endpoint = search ? `/modules/search?module_request=${search}` : `/modules/`;
 
 	const res = await fetchWithAuth(endpoint, cookies);
 

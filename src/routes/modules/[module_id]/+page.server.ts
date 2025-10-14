@@ -4,15 +4,10 @@ import type { PageServerLoad } from './$types';
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 import { redirect, fail } from '@sveltejs/kit'; //
 
-const baseUrl =
-	process.env.NODE_ENV === 'production'
-		? 'https://mijnbackenddemo3.loca.lt'
-		: 'http://localhost:3000';
-
 export const load: PageServerLoad = async ({ params, cookies }) => {
 	const nameId = params.module_id;
 
-	const endpoint = `${baseUrl}/modules/${nameId}`;
+	const endpoint = `/modules/${nameId}`;
 
 	const res = await fetchWithAuth(endpoint, cookies);
 
@@ -33,7 +28,7 @@ export const actions: Actions = {
 		const formData = await request.formData();
 		const isFavored = formData.get('is_favored') === 'true';
 
-		const endpoint = `${baseUrl}/modules/${moduleId}/favored`;
+		const endpoint = `/modules/${moduleId}/favored`;
 
 		const options = {
 			method: 'POST',

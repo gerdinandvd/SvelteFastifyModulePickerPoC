@@ -53,10 +53,8 @@ async function ModulesRoutes(fastify: FastifyInstance) {
 	});
 
 	fastify.get<GetFavoriteModulesRoute>('/favorites', opts2, async (request, reply) => {
-		console.log(request.user);
 		const { user_id } = request.user as { user_id: Types.ObjectId };
 
-		console.log(user_id);
 		reply.send(await GetAllFavoriteModules(user_id));
 	});
 

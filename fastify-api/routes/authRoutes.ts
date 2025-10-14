@@ -20,9 +20,7 @@ async function authRoutes(fastify: FastifyInstance) {
 
 			const { success, user_id } = await Login(username, password);
 
-			if (!success) {
-				return reply.code(401); // foutmelding ofzo
-			}
+			if (!success) return reply.status(401).send();
 
 			const accessToken = await reply.jwtSign({ user_id }, { expiresIn: '15m' });
 			const refreshToken = await reply.jwtSign({ user_id }, { expiresIn: '7d' });

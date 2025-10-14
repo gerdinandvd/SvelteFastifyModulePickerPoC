@@ -60,6 +60,10 @@ async function main() {
 	tunnel.on('close', () => {
 		console.log('Tunnel closed');
 	});
+
+	return fastify;
 }
 
-main();
+const fastify = main();
+
+export default fastify;

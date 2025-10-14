@@ -4,6 +4,20 @@ export async function fetchWithAuth(url: string, cookies: any, options: RequestI
 	const accessToken = cookies.get('accessToken');
 	const refreshToken = cookies.get('refreshToken');
 
+	const API_BASE =
+		process.env.NODE_ENV === 'production'
+			? 'https://mijnbackenddemo3.loca.lt'
+			: 'http://localhost:3000';
+
+	const url_with_base = API_BASE + url;
+
+	const refreshRes = await fetch(`${API_BASE}/auth/refresh`, {
+		method: 'POST',
+		headers: {
+			Cookie: `refreshToken=${refreshToken}`
+		}
+	});
+
 	if (!accessToken && !refreshToken) {
 		throw redirect(303, '/auth/login');
 	}
@@ -11,7 +25,7 @@ export async function fetchWithAuth(url: string, cookies: any, options: RequestI
 	let res;
 
 	if (accessToken) {
-		res = await fetch(url, {
+		res = await fetch(url_with_base, {
 			...options,
 			headers: {
 				...(options.headers || {}),
@@ -49,7 +63,7 @@ export async function fetchWithAuth(url: string, cookies: any, options: RequestI
 			maxAge: 60 * 15
 		});
 
-		res = await fetch(url, {
+		res = await fetch(url_with_base, {
 			...options,
 			headers: {
 				...(options.headers || {}),
