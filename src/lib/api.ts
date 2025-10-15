@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 
 export async function fetchWithAuth(url: string, cookies: any, options: RequestInit = {}) {
-	const accessToken = cookies.get('accessToken');
+	let accessToken = cookies.get('accessToken');
 	const refreshToken = cookies.get('refreshToken');
 
 	const API_BASE =
@@ -11,38 +11,33 @@ export async function fetchWithAuth(url: string, cookies: any, options: RequestI
 
 	const url_with_base = API_BASE + url;
 
-	const refreshRes = await fetch(`${API_BASE}/auth/refresh`, {
-		method: 'POST',
-		headers: {
-			Cookie: `refreshToken=${refreshToken}`
-		}
-	});
-
 	if (!accessToken && !refreshToken) {
 		throw redirect(303, '/auth/login');
 	}
 
-	let res;
+	let res: Response | null = null;
 
-	if (accessToken) {
-		res = await fetch(url_with_base, {
+	const fetchWithToken = async (token: string) => {
+		return await fetch(url_with_base, {
 			...options,
 			headers: {
 				...(options.headers || {}),
-				Authorization: `Bearer ${accessToken}`,
+				Authorization: `Bearer ${token}`,
 				'Content-Type': 'application/json'
 			}
 		});
-	} else {
-		res = { status: 401 } as Response; // als accestoken er niet is dan is er niet geautoriseerd
+	};
+
+	if (accessToken) {
+		res = await fetchWithToken(accessToken);
 	}
 
-	if (res.status === 401) {
+	if (!res || res.status === 401) {
 		if (!refreshToken) {
 			throw redirect(303, '/auth/login');
 		}
 
-		const refreshRes = await fetch('http://localhost:3000/auth/refresh', {
+		const refreshRes = await fetch(`${API_BASE}/auth/refresh`, {
 			method: 'POST',
 			headers: {
 				Cookie: `refreshToken=${refreshToken}`
@@ -63,14 +58,9 @@ export async function fetchWithAuth(url: string, cookies: any, options: RequestI
 			maxAge: 60 * 15
 		});
 
-		res = await fetch(url_with_base, {
-			...options,
-			headers: {
-				...(options.headers || {}),
-				Authorization: `Bearer ${newToken}`,
-				'Content-Type': 'application/json'
-			}
-		});
+		accessToken = newToken;
+
+		res = await fetchWithToken(accessToken);
 	}
 
 	if (res.status === 401) {
