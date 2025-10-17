@@ -14,7 +14,7 @@ const oneModule = {
 	type: 'test',
 	level: 'test',
 	theme: 'test',
-	credits: 0,
+	credits: '0',
 	favored: false,
 	detailed_description: 'test'
 };

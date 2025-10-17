@@ -30,14 +30,14 @@ const multipleModules = [
 		_id: 'test',
 		name: 'test',
 		basic_description: 'test',
-		credits: 0
+		credits: '0'
 	},
 	{
 		level: 'test',
 		_id: 'test',
 		name: 'test',
 		basic_description: 'test',
-		credits: 0
+		credits: '0'
 	}
 ];
 
