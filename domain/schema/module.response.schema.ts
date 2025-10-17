@@ -7,7 +7,7 @@ const ModuleResponseSchema = {
 		type: { type: 'string' },
 		level: { type: 'string' },
 		theme: { type: 'string' },
-		credits: { type: 'number' },
+		credits: { type: 'string' },
 		favored: { type: 'boolean' }
 	},
 	required: ['name', 'basic_description', 'type', 'level', 'theme', 'credits', 'favored']

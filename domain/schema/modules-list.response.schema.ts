@@ -5,7 +5,7 @@ const ModuleListItemSchema = {
 		name: { type: 'string' },
 		basic_description: { type: 'string' },
 		level: { type: 'string' },
-		credits: { type: 'number' }
+		credits: { type: 'string' }
 	},
 	required: ['_id', 'name', 'basic_description', 'level', 'credits']
 } as const;

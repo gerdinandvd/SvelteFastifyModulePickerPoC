@@ -45,11 +45,12 @@ async function ModulesRoutes(fastify: FastifyInstance) {
 	fastify.get<GetSearchModulesRoute>('/search', opts1, async (request, reply) => {
 		const module_request = request.query.module_request;
 
-		if (typeof module_request != 'undefined') {
-			reply.send(await SearchForModules(module_request));
-		}
+		const result =
+			typeof module_request !== 'undefined'
+				? await SearchForModules(module_request)
+				: await GetAllModules();
 
-		reply.send(await GetAllModules());
+		reply.send(result);
 	});
 
 	fastify.get<GetFavoriteModulesRoute>('/favorites', opts2, async (request, reply) => {

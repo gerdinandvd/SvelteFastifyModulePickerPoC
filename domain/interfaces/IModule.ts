@@ -5,6 +5,6 @@ export interface IModule {
 	type: string;
 	level: string;
 	theme: string;
-	credits: number;
+	credits: string;
 	keywords: string[];
 }

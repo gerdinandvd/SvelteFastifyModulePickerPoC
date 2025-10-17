@@ -21,6 +21,8 @@ export const ModuleModel = model<IModule>('Module', ModuleSchema);
 export async function connectDB(uri: string) {
 	try {
 		await mongoose.connect(uri, clientOptions);
+		UserModel.syncIndexes();
+		ModuleModel.syncIndexes();
 		console.log('Connected to MongoDB!');
 	} catch (err) {
 		console.error('MongoDB connection error:', err);
