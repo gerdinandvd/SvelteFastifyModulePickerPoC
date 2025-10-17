@@ -1,26 +1,35 @@
-<html lang="nl">
-	<body>
-		<div class="login-container">
-			<form method="post" class="login-card">
-				<label for="username">Username</label>
-				<input type="text" placeholder="naam" name="username" required />
+<script lang="ts">
+	export let form;
+</script>
 
-				<label for="password">Password</label>
-				<input type="password" placeholder="wachtwoord" name="password" required />
+<div class="login-container">
+	<form method="post" class="login-card">
+		<label for="username">Username</label>
+		<input type="text" placeholder="naam" name="username" required />
 
-				<button type="submit">Login</button>
-			</form>
-		</div>
-	</body>
-</html>
+		<label for="password">Password</label>
+		<input type="password" placeholder="wachtwoord" name="password" required />
+
+		<button type="submit">Login</button>
+
+		{#if form?.error}
+			<p class="error">{form.error}</p>
+		{/if}
+	</form>
+</div>
 
 <style>
+	.error {
+		color: red;
+		margin-top: 0.5rem;
+	}
+
 	.login-container {
 		display: flex;
-		justify-content: center; /* horizontaal centreren */
-		align-items: center; /* verticaal centreren */
-		height: 100vh; /* vult het hele scherm */
-		background: #f5f5f5; /* optioneel, lichte achtergrond */
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+		background: #f5f5f5;
 	}
 
 	.login-card {

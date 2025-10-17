@@ -13,13 +13,27 @@ export const actions: Actions = {
 		const username = form.get('username') as string;
 		const password = form.get('password') as string;
 
-		// Stuur login request naar je backend
-		const res = await fetch(`${baseUrl}/auth/login`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ username, password }),
-			credentials: 'include'
-		});
+		let res;
+
+		try {
+			res = await fetch(`${baseUrl}/auth/login`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ username, password }),
+				credentials: 'include'
+			});
+		} catch (err) {
+			return fail(503, {
+				error: 'De service is tijdelijk niet beschikbaar. Probeer het later opnieuw.'
+			});
+		}
+
+		if (!res.ok) {
+			let message = 'Er is iets misgegaan bij het inloggen.';
+			if (res.status === 401) message = 'Ongeldige gebruikersnaam of wachtwoord.';
+			if (res.status === 500) message = 'Interne serverfout. Probeer het later opnieuw.';
+			return fail(res.status, { error: message });
+		}
 
 		const setCookieHeader = res.headers.get('set-cookie');
 
@@ -28,29 +42,23 @@ export const actions: Actions = {
 
 		const data = await res.json();
 
-		if (data) {
-			cookies.set('accessToken', data.accessToken, {
-				httpOnly: true,
-				path: '/',
-				sameSite: 'strict',
-				secure: process.env.NODE_ENV === 'production',
-				maxAge: 60 * 15
-			});
+		cookies.set('accessToken', data.accessToken, {
+			httpOnly: true,
+			path: '/',
+			sameSite: 'strict',
+			secure: process.env.NODE_ENV === 'production',
+			maxAge: 60 * 15
+		});
 
-			cookies.set('refreshToken', refreshToken, {
-				httpOnly: true,
-				path: '/',
-				sameSite: 'strict',
-				secure: process.env.NODE_ENV === 'production',
-				maxAge: 60 * 60 * 24 * 7
-			});
+		cookies.set('refreshToken', refreshToken, {
+			httpOnly: true,
+			path: '/',
+			sameSite: 'strict',
+			secure: process.env.NODE_ENV === 'production',
+			maxAge: 60 * 60 * 24 * 7
+		});
 
-			// redirect naar /modules bij succes
-			throw redirect(303, '/modules');
-		}
-
-		// fail() houdt de page open en geeft data terug
-		return fail(400, 'er is iets misgegaan');
+		throw redirect(303, '/modules');
 	}
 };
 
@@ -58,8 +66,8 @@ function parseSetCookie(setCookieHeader: string | null): Record<string, string> 
 	if (!setCookieHeader) return {};
 
 	const cookies: Record<string, string> = {};
-	// split op comma + ; is tricky, dus beter per cookie
-	const parts = setCookieHeader.split(/; */); // split op ; met optionele spaties
+
+	const parts = setCookieHeader.split(/; */);
 	const [nameValue, ...rest] = parts;
 	const [name, value] = nameValue.split('=');
 	cookies[name] = value;
